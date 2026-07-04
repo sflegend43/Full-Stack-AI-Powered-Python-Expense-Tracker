@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 ExpensePro | Create Account</title>
+    <meta name="description" content="Join ExpensePro — the AI-powered expense tracker. Create your free account today.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- ═══════════════ PARTICLES BACKGROUND ═══════════════ -->
+    <div id="particles-js"></div>
+    <div class="auth-container">
+        <div class="auth-card">
+
+            <!-- Logo -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 3rem; margin-bottom: 0.5rem; filter: drop-shadow(0 0 16px rgba(251,191,36,0.5));">🪙</div>
+                <h2>EXPENSE<span style="color:#fbbf24; -webkit-text-fill-color: #fbbf24;">PRO</span></h2>
+                <div style="color: #a78bfa; letter-spacing: 4px; font-size: 0.75rem; font-weight: 700; margin-top: 4px;">CREATE YOUR ACCOUNT</div>
+            </div>
+
+            <h3 style="text-align:center; font-size:1.1rem; margin-bottom:1.5rem; -webkit-text-fill-color:#d1d5db; background:none; color:#d1d5db;">
+                🌟 Join ExpensePro
+            </h3>
+
+            <!-- Flash message -->
+            <div id="flash-message"></div>
+
+            <!-- Signup Form -->
+            <form id="signupForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="fullname">👤 Full Name</label>
+                    <input type="text" name="fullname" id="fullname" class="form-control"
+                        placeholder="John Doe" required autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="email">📧 Email Address</label>
+                    <input type="email" name="email" id="email" class="form-control"
+                        placeholder="your.email@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">🔒 Password</label>
+                    <input type="password" name="password" id="password" class="form-control"
+                        placeholder="Minimum 6 characters" required minlength="6" autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="signup-btn">
+                    ✅ Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign In 🚀</a></p>
+            </div>
+        </div>
+    </div>
+    <script src="auth.js"></script>
+
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+          "particles": {
+            "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": ["#00f3ff", "#ff00ff", "#8b5cf6"] },
+            "shape": { "type": "circle" },
+            "opacity": { "value": 0.4, "random": true },
+            "size": { "value": 3, "random": true },
+            "line_linked": { "enable": true, "distance": 150, "color": "#00f3ff", "opacity": 0.3, "width": 1 },
+            "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+          },
+          "interactivity": {
+            "detect_on": "window",
+            "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "repulse" }, "resize": true },
+            "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.8, "color": "#ff00ff" } }, "repulse": { "distance": 150, "duration": 0.4 } }
+          },
+          "retina_detect": true
+        });
+    </script>
+</body>
+
+</html>

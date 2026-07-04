@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💎 ExpensePro | Premium Dashboard</title>
+    <meta name="description" content="Track your expenses professionally with AI-powered insights, detailed charts, and real-time budget management.">
+    <meta name="theme-color" content="#8b5cf6">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="chart.min.js"></script>
+    <script>
+        // Guard: redirect to login if not authenticated
+        if (!localStorage.getItem('currentUser')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+
+<body>
+    <!-- ═══════════════ PARTICLES BACKGROUND ═══════════════ -->
+    <div id="particles-js"></div>
+
+    <!-- Toast Container -->
+    <div id="flash-container"></div>
+
+    <div class="container">
+        <!-- ═══════════════ NAVBAR ═══════════════ -->
+        <nav>
+            <div class="logo">
+                <span class="logo-icon">🪙</span>
+                <div class="logo-text">
+                    <span class="logo-name">EXPENSE<span class="logo-pro">PRO</span></span>
+                    <div class="logo-sub">AI POWERED TRACKER</div>
+                </div>
+            </div>
+            <div class="nav-right">
+                <div class="nav-user">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <span class="nav-welcome">Welcome, <b id="user-name-display">User</b></span>
+                </div>
+                <a href="#" onclick="logout()" class="logout-btn">Sign Out ↗</a>
+            </div>
+        </nav>
+
+        <!-- ═══════════════ AI INSIGHTS ═══════════════ -->
+        <div class="ai-box">
+            <div class="ai-label">✨ AI INSIGHTS</div>
+            <div id="ai-insights-box" class="ai-content">
+                Analyzing your spending patterns...
+            </div>
+        </div>
+
+        <!-- ═══════════════ SEARCH ═══════════════ -->
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input"
+                placeholder="Search expenses by description or category..." onkeyup="renderExpenses()">
+        </div>
+
+        <!-- ═══════════════ PERIOD FILTER ═══════════════ -->
+        <div class="period-nav">
+            <a href="?period=all" class="period-btn" id="btn-period-all">📅 All Time</a>
+            <a href="?period=month" class="period-btn" id="btn-period-month">🗓 This Month</a>
+            <a href="?period=week" class="period-btn" id="btn-period-week">📆 This Week</a>
+            <button onclick="exportCSV()" class="period-btn export-btn">💾 Excel Report</button>
+        </div>
+
+        <!-- ═══════════════ MAIN WALLET BALANCE ═══════════════ -->
+        <div class="wallet-balance-container">
+            <h4>Wallet Balance</h4>
+            <h2>PKR <span id="balance-val" style="font-size: 2.2rem;">50,000</span></h2>
+        </div>
+
+        <!-- ═══════════════ STATS GRID ═══════════════ -->
+        <div class="stats-grid">
+            <!-- Budget Box — Clickable -->
+            <div class="stat-box stat-box--budget" onclick="openBudgetModal()" title="Click to change budget">
+                <div class="stat-icon">💼</div>
+                <h4>Budget Allocation</h4>
+                <p>PKR <span id="budget-val">50,000</span></p>
+                <div class="stat-edit-hint">✏️ Click to edit</div>
+            </div>
+
+            <div class="stat-box stat-box--spent">
+                <div class="stat-icon">💸</div>
+                <h4>Total Spent</h4>
+                <p>PKR <span id="total-val">0</span></p>
+            </div>
+        </div>
+
+        <!-- ═══════════════ BUDGET PROGRESS BAR ═══════════════ -->
+        <div class="budget-progress-container">
+            <div class="budget-progress-track">
+                <div id="budget-progress-bar" class="budget-progress-bar"></div>
+            </div>
+            <span id="budget-progress-label" class="budget-progress-label">0% of budget used</span>
+        </div>
+
+        <!-- ═══════════════ MAIN DASHBOARD GRID ═══════════════ -->
+        <div class="dashboard-grid">
+
+            <!-- LEFT: Add Expense Form -->
+            <div class="glass-card form-card">
+                <h3>✨ New Transaction</h3>
+                <form id="addExpenseForm" autocomplete="off">
+                    <div class="input-group">
+                        <input type="text" name="desc" id="desc-input" placeholder="💭 What did you buy?" required>
+                        <button type="button" id="voiceKey" class="voice-btn" onclick="window.voiceApp && window.voiceApp.toggle()" title="Voice Input">🎤</button>
+                    </div>
+                    <select name="type" id="type-input" required style="margin-bottom: 1rem;">
+                        <option value="expense" selected>💸 Expense (Normal Spending)</option>
+                        <option value="loan">🤝 Loan Received (Add to Balance)</option>
+                        <option value="payment">📤 Payment Sent (Transfer Out)</option>
+                    </select>
+                    <div id="voiceStatus" class="voice-status"></div>
+                    <input type="number" name="amount" placeholder="💵 Amount (PKR)" required step="0.01" min="0.01">
+                    <select name="category" required>
+                        <option value="">📂 Select Category</option>
+                        <option value="Food & Drinks">🍔 Food &amp; Drinks</option>
+                        <option value="Transport">🚗 Transport</option>
+                        <option value="Utilities">💡 Utilities</option>
+                        <option value="Entertainment">🎮 Entertainment</option>
+                        <option value="Shopping">🛍️ Shopping</option>
+                        <option value="Healthcare">🏥 Healthcare</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                    <input type="date" name="date" required id="add-date-input">
+                    <button type="submit" class="btn-submit">✅ Add Expense</button>
+                </form>
+
+                <div class="quick-stats" style="flex-wrap: wrap;">
+                    <div class="quick-stat">
+                        <span class="quick-stat-label">Transactions</span>
+                        <span class="quick-stat-val" id="count-val">0</span>
+                    </div>
+                    <div class="quick-stat-divider"></div>
+                    <div class="quick-stat">
+                        <span class="quick-stat-label">Avg. Spend</span>
+                        <span class="quick-stat-val" id="avg-val">PKR 0</span>
+                    </div>
+                    <div class="quick-stat-divider"></div>
+                    <div class="quick-stat" style="min-width: 45%;">
+                        <span class="quick-stat-label">Loans Rcvd</span>
+                        <span class="quick-stat-val" id="loan-val" style="background: linear-gradient(135deg, #10b981, #34d399); -webkit-background-clip: text;">PKR 0</span>
+                    </div>
+                    <div class="quick-stat-divider"></div>
+                    <div class="quick-stat" style="min-width: 45%;">
+                        <span class="quick-stat-label">Payments</span>
+                        <span class="quick-stat-val" id="payment-val" style="background: linear-gradient(135deg, #ef4444, #f87171); -webkit-background-clip: text;">PKR 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Charts + Table -->
+            <div class="glass-card content-card">
+
+                <!-- Charts Row -->
+                <div class="charts-section">
+                    <h3>📊 Analytics Dashboard</h3>
+                    <div class="charts-row">
+                        <!-- Simple Category Chart -->
+                        <div class="chart-wrapper chart-wrapper--doughnut" style="width: 100%; max-width: 400px; margin: 0 auto;">
+                            <h4 class="chart-title">Spending by Category</h4>
+                            <div class="chart-canvas-box">
+                                <canvas id="doughnutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="table-section">
+                    <h3>📋 Recent Transactions</h3>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>📅 Date</th>
+                                    <th>🏷️ Type</th>
+                                    <th>📝 Description</th>
+                                    <th>📂 Category</th>
+                                    <th>💰 Amount</th>
+                                    <th>⚙️ Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expense-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════ BUDGET MODAL ═══════════════ -->
+    <div id="budgetModal" class="modal-overlay" style="display:none;">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h3>💰 Set Monthly Budget</h3>
+                <button class="modal-close-x" onclick="closeBudgetModal()">✕</button>
+            </div>
+            <p class="modal-desc">Set your total spending limit. You'll see alerts as you approach your limit.</p>
+            <form id="budgetForm">
+                <input type="number" id="budget-input" placeholder="e.g. 50000" required min="1" step="1">
+                <div class="modal-actions">
+                    <button type="submit">✅ Save Budget</button>
+                    <button type="button" onclick="closeBudgetModal()" class="btn-cancel">❌ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════ EDIT MODAL ═══════════════ -->
+    <div id="editModal" class="modal-overlay" style="display:none;">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h3>✏️ Edit Expense</h3>
+                <button class="modal-close-x" onclick="closeModal()">✕</button>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="edit-id">
+                <select id="edit-type" required>
+                    <option value="expense">💸 Expense (Normal Spending)</option>
+                    <option value="loan">🤝 Loan Received (Add to Balance)</option>
+                    <option value="payment">📤 Payment Sent (Transfer Out)</option>
+                </select>
+                <input type="text" id="edit-desc" placeholder="💭 Description" required>
+                <input type="number" id="edit-amount" placeholder="💵 Amount (PKR)" required step="0.01" min="0.01">
+                <select id="edit-category" required>
+                    <option value="">📂 Select Category</option>
+                    <option value="Food & Drinks">🍔 Food &amp; Drinks</option>
+                    <option value="Transport">🚗 Transport</option>
+                    <option value="Utilities">💡 Utilities</option>
+                    <option value="Entertainment">🎮 Entertainment</option>
+                    <option value="Shopping">🛍️ Shopping</option>
+                    <option value="Healthcare">🏥 Healthcare</option>
+                    <option value="Education">📚 Education</option>
+                    <option value="Other">📦 Other</option>
+                </select>
+                <input type="date" id="edit-date" required>
+                <div class="modal-actions">
+                    <button type="submit">✅ Update</button>
+                    <button type="button" onclick="closeModal()" class="btn-cancel">❌ Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="logic.js"></script>
+    
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+          "particles": {
+            "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
+            "color": { "value": ["#00f3ff", "#ff00ff", "#8b5cf6"] },
+            "shape": { "type": "circle" },
+            "opacity": { "value": 0.4, "random": true },
+            "size": { "value": 3, "random": true },
+            "line_linked": { "enable": true, "distance": 150, "color": "#00f3ff", "opacity": 0.3, "width": 1 },
+            "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
+          },
+          "interactivity": {
+            "detect_on": "window",
+            "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "repulse" }, "resize": true },
+            "modes": { "grab": { "distance": 180, "line_linked": { "opacity": 0.8, "color": "#ff00ff" } }, "repulse": { "distance": 150, "duration": 0.4 } }
+          },
+          "retina_detect": true
+        });
+    </script>
+</body>
+
+</html>
