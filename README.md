@@ -1,8 +1,6 @@
 # Full-Stack-AI-Powered-Python-Expense-Tracker
 
-===================================================
      💎 EXPENSEPRO - PREMIUM EXPENSE TRACKER 
-===================================================
 
 Overview
 --------
